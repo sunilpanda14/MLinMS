@@ -1,11 +1,10 @@
 # In coder
-# Run with `pdm run streamlit run 9_hackathon_II/deploy_values.py`
+# Run with `c
 # Check your port (usually 8501). 
 # Use the "PORTS" tab in VScode to forward the port to localhost and view it your local browser
 # OR use preview browser in VScode
 
 import streamlit as st
-from transformers import pipeline
 
 import pandas as pd
 from autogluon.tabular import TabularPredictor
@@ -14,28 +13,33 @@ import os
 # Dont use GPUS (they are usauall)
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
-# model_path = f"your path to the model"
-# predictor = TabularPredictor.load(model_path)
+model_path = f"/home/bt720725/MLinMS/8_hackathon/AutogluonModels/ag-20240626_164032"
+predictor = TabularPredictor.load(model_path)
 
 def main():
-    st.title("Use my cool ML model")
+    st.title("Spidy Web Integrity Predictor")
     st.write('Your inputs')
     # Create an inputs or sliders; up to you
-    prop1 = st.slider('prop1', key='prop1', min_value=10, max_value=20)
-    prop2 = st.text_input('prop2', key='prop2')
-    prop3 = st.text_input('prop3', key='prop3')
-    prop4 = st.text_input('prop4', key='prop4')
+    m = st.text_input('m', key='m')
+    v = st.text_input('v', key='v')
+    r = st.selectbox(
+    "What's the radius of the dust?",
+    ("1.0", "2.0"))
+    st.write("You selected:", r)
+    t = st.selectbox(
+    "What's the timestep?",
+    ("0.000000016", "0.000000008"))
+    st.write("You selected:", t)
  
-
     # Create a button to trigger model inference
     if st.button("Predict"):
         st.subheader('This is the prediction')
         # Perform inference using the loaded model
         
-        df = pd.DataFrame([[prop1, prop2, prop3, prop4]], columns=['prop1', 'prop2', 'prop3', 'prop4'])
+        df = pd.DataFrame([[m, v, r, t]], columns=['Mass_Dust_Particle_in_gram', 'Velocity_in__(m/sec)', 'Radius_of_Dust__Sphere_(mm)', 'Timestep'])
         df
-        # result = predictor.predict(df)
-        # result
+        result = predictor.predict(df)
+        result
 
 
 if __name__ == '__main__':
